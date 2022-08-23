@@ -588,6 +588,7 @@ while game_run:
                 sword_s.play()
                 spin = Spin(player.rect.centerx, player.rect.centery, 5, 'spin')
                 attack_cooltime = 0
+
                 spin.update_animation()
                 spin.draw(screen) # 플레이어 생성
 
