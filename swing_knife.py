@@ -8,8 +8,8 @@ import button
 pygame.init()
 
 start_game = False
-screen_width = 800
-screen_height = 640
+screen_width = 800    # 창 너비
+screen_height = 640   # 창 높이
 size = [screen_width, screen_height]  # 창 크기
 screen = pygame.display.set_mode(size)
 
@@ -20,7 +20,7 @@ pygame.display.set_caption(title)
 
 # 게임 내 설정
 clock = pygame.time.Clock() #전역변수 하나밖에 사용 안함. 따라서 지울것
-background_color = (0, 0, 40)
+background_color = (0, 0, 40)  # 배경색 설정
 
 # 폰트 설정
 myFont = pygame.font.Font('data1/a옛날목욕탕B.ttf', 30)
@@ -45,7 +45,7 @@ hit_enemy_s = pygame.mixer.Sound('data1/sound/destroy_enemy.wav')
 player_hit_s = pygame.mixer.Sound('data1/sound/player_hit.mp3')
 
 
-class Player(pygame.sprite.Sprite):
+class Player(pygame.sprite.Sprite): # 플레이어 설정
     def __init__(self, x, y, scale, speed):
         pygame.sprite.Sprite.__init__(self)
         self.alive = True # 살아있는지
@@ -124,7 +124,7 @@ class Player(pygame.sprite.Sprite):
             self.frame_index = 0
             self.update_time = pygame.time.get_ticks()
 
-    def handle_weapon(self, display):
+    def handle_weapon(self, display): # 무기 설정, 플레이어 마우스 포인터 따라오게
         mouse_x, mouse_y = pygame.mouse.get_pos()
 
         rel_x = mouse_x - self.rect.centerx
@@ -144,7 +144,7 @@ class Player(pygame.sprite.Sprite):
             self.handle_weapon(display)
 
 
-class Spin(pygame.sprite.Sprite): #애니메이션 고치는중, 뒤에 update_animation, update_action 추가 Spin 맨 뒤에 update animation 없음 추가하면 끝
+class Spin(pygame.sprite.Sprite): # 애니메이션 고치는중, 뒤에 update_animation, update_action 추가 Spin 맨 뒤에 update animation 없음 추가하면 끝
     def __init__(self, x, y, scale, type):
         pygame.sprite.Sprite.__init__(self)
         self.type = type
@@ -155,6 +155,7 @@ class Spin(pygame.sprite.Sprite): #애니메이션 고치는중, 뒤에 update_a
         self.drawing = True
         self.flip = False
 
+        # 애니메이션 리스트 추가
         animation_types = ['spin']
         for animation in animation_types:
             temp_list = []
@@ -172,6 +173,7 @@ class Spin(pygame.sprite.Sprite): #애니메이션 고치는중, 뒤에 update_a
         self.rect.center = (x, y)
         screen.blit(pygame.transform.flip(self.image, self.flip, False), self.rect)
 
+        # enemy에 닿았을 때, 소리 재생 및 enemy 지움
         for enemy in enemy_group:
             if enemy.rect.colliderect(self.rect):
                 if self.type == "spin":
@@ -182,6 +184,7 @@ class Spin(pygame.sprite.Sprite): #애니메이션 고치는중, 뒤에 update_a
                     player.score += enemy.score
                     print("score:", player.score)
 
+    # 애니메이션 업데이트(?)
     def update_animation(self):
         ANIM_COOLDOWN = 100
 
@@ -201,16 +204,17 @@ class Spin(pygame.sprite.Sprite): #애니메이션 고치는중, 뒤에 update_a
             self.frame_index = 0
             self.update_time = pygame.time.get_ticks()
 
-    def draw(self, display): # 플레이어 화면에 생성
+    def draw(self, display): # 화면에 생성
         display.blit(pygame.transform.flip(self.image, self.flip, False), self.rect) #transform? 왜사용?
 
-class Bullet(pygame.sprite.Sprite):
+class Bullet(pygame.sprite.Sprite): # enemy가 쏘는 총알
     def __init__(self, x, y, dir_x, dir_y, type):
         pygame.sprite.Sprite.__init__(self)
         self.speed = 10
         self.enemy_bullet_speed = 2
         self.type = type
 
+        # 나중 캐릭터 무기의 확장성을 위해 if 사용
         if self.type == "enemy_bullet":
             self.image = enemy_bullet
         self.rect = self.image.get_rect()
@@ -239,7 +243,7 @@ class Bullet(pygame.sprite.Sprite):
             self.kill()
 
 
-class Enemy(pygame.sprite.Sprite):
+class Enemy(pygame.sprite.Sprite): # enemy 클래스
     def __init__(self, x, y, scale, speed, type):
         pygame.sprite.Sprite.__init__(self)
 
@@ -249,6 +253,7 @@ class Enemy(pygame.sprite.Sprite):
         self.speed = speed
         self.type = type
 
+        # enemy가 쏘는 총알 수에 따라서 score 달라짐
         if type == "shots3":
             self.score = 30
         elif type == "shots4":
@@ -352,6 +357,7 @@ class Enemy(pygame.sprite.Sprite):
         if self.frame_index >= len(self.animation_list[self.action]):
             self.frame_index = 0
 
+    # enemy 총알 개수에 따라 설정
     def attack(self): # 적 공격
         if self.type == "shots3":
             enemy_bullet = Bullet(
@@ -438,8 +444,7 @@ class Enemy(pygame.sprite.Sprite):
             bullet_group.add(enemy_bullet7)
 
     def draw(self, display): # 적 화면 생성
-        display.blit(pygame.transform.flip(
-            self.image, self.flip, False), self.rect)
+        display.blit(pygame.transform.flip(self.image, self.flip, False), self.rect)
 
 
 def spawn_enemy(): # 적 생성
@@ -462,7 +467,7 @@ def spawn_enemy(): # 적 생성
         enemy = Enemy(random_x, random_y, 1.5, 0.5, "shots8")
     enemy_group.add(enemy)
 
-
+# 게임 리셋
 def reset_game():
     for enemy in enemy_group:
         enemy.kill()
@@ -499,7 +504,7 @@ player = Player(400, 320, 1.5, 3)
 start_button = button.Button(screen_width // 2 - 130, screen_height // 2 -150, start_img, 1)
 exit_button = button.Button(screen_width // 2 -130, screen_height // 2 +50, exit_img, 1)
 
-# 변수 설정a
+# 변수 설정
 
 moving_left = False
 moving_right = False
@@ -588,7 +593,6 @@ while game_run:
                 sword_s.play()
                 spin = Spin(player.rect.centerx, player.rect.centery, 5, 'spin')
                 attack_cooltime = 0
-
                 spin.update_animation()
                 spin.draw(screen) # 플레이어 생성
 
