@@ -33,7 +33,7 @@ background_img = pygame.image.load('data1/img/bg/background.png').convert() #con
 sword_img = pygame.image.load('data1/img/player/swing/sword.png').convert_alpha()
 sword_img = pygame.transform.scale(sword_img, (int(sword_img.get_width()*1.2), int(sword_img.get_height()*0.3)))
 enemy_bullet = pygame.image.load('data1/img/enemy/attack.png').convert_alpha()
-enemy_bullet = pygame.transform.scale(enemy_bullet, (int(enemy_bullet.get_width()*0.8), int(enemy_bullet.get_height()*0.6)))
+enemy_bullet = pygame.transform.scale(enemy_bullet, (int(enemy_bullet.get_width()*0.5), int(enemy_bullet.get_height()*0.5)))
 heart = pygame.image.load('data1/img/heart.png').convert_alpha()
 empty_heart = pygame.image.load('data1/img/empty_heart.png').convert_alpha()
 
@@ -584,7 +584,7 @@ while game_run:
         
         # 화면에 점수 표시
         score_text = myFont.render("Score: " + str(player.score), True, (255, 255, 255))
-        screen.blit(score_text, [350, 0])
+        screen.blit(score_text, [600, 0])
 
         # 플레이어 생존 시
         if player.alive:
